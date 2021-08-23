@@ -2,12 +2,11 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { Address } from './entity/address';
 import { Product } from './entity/product';
 import { User } from './entity/user';
 import { UserModule } from './module/user/user/user.module';
 import { UserController } from './controller/user/user/user.controller';
-import { UserService } from './service/user/user/user.service';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
@@ -18,12 +17,13 @@ import { UserService } from './service/user/user/user.service';
       username: 'newuser',
       password: 'newuser',
       database: 'paperclip',
-      entities: [User, Product, Address],
+      entities: [User, Product],
       synchronize: true,
     }),
-    UserModule,
+    ConfigModule.forRoot({ isGlobal: true }),
+    UserModule
   ],
   controllers: [AppController, UserController],
-  providers: [AppService, UserService],
+  providers: [AppService],
 })
 export class AppModule {}

@@ -1,10 +1,9 @@
 import { Column, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn } from "typeorm";
-import { Address } from "./address";
 
 @Entity()
 export class User {
-  @PrimaryGeneratedColumn()
-  id: number;
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
 
   @Column()
   firstName: string;
@@ -18,7 +17,12 @@ export class User {
   @Column()
   password: string;  
 
-  @OneToOne(type => Address)
-  @JoinColumn()
-  address: Address;
+  @Column()
+  country: string;
+
+  @Column()
+  city: string;
+
+  @Column()
+  zipcode: string;
 }

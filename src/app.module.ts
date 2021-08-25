@@ -10,6 +10,8 @@ import { ConfigModule } from '@nestjs/config';
 import { Category } from './entity/category';
 import { CategoryController } from './controller/category/category/category.controller';
 import { CategoryModule } from './module/category/category/category.module';
+import { ProductController } from './controller/product/product/product.controller';
+import { ProductModule } from './module/product/product/product.module';
 
 @Module({
   imports: [
@@ -25,9 +27,10 @@ import { CategoryModule } from './module/category/category/category.module';
     }),
     ConfigModule.forRoot({ isGlobal: true }),
     UserModule,
-    CategoryModule
+    CategoryModule,
+    ProductModule
   ],
-  controllers: [AppController, UserController, CategoryController],
+  controllers: [AppController, UserController, CategoryController, ProductController],
   providers: [AppService],
 })
 export class AppModule {}

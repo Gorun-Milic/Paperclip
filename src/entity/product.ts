@@ -4,6 +4,7 @@ import { User } from "./user";
 
 @Entity()
 export class Product {
+
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
@@ -12,6 +13,11 @@ export class Product {
 
   @Column()
   description: string;
+
+  @Column({
+    type: 'longblob'
+  })
+  photo: string;
 
   @ManyToOne(type => Category, category => category.products)
   category: Category;

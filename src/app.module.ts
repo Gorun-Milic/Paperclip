@@ -12,6 +12,10 @@ import { CategoryController } from './controller/category/category/category.cont
 import { CategoryModule } from './module/category/category/category.module';
 import { ProductController } from './controller/product/product/product.controller';
 import { ProductModule } from './module/product/product/product.module';
+import { CommentModule } from './module/comment/comment.module';
+import { CommentService } from './service/comment/comment.service';
+import { CommentController } from './controller/comment/comment.controller';
+import { Comment } from './entity/comment';
 
 @Module({
   imports: [
@@ -22,15 +26,16 @@ import { ProductModule } from './module/product/product/product.module';
       username: 'newuser',
       password: 'newuser',
       database: 'paperclip',
-      entities: [User, Product, Category],
+      entities: [User, Product, Category, Comment],
       synchronize: true,
     }),
     ConfigModule.forRoot({ isGlobal: true }),
     UserModule,
     CategoryModule,
-    ProductModule
+    ProductModule,
+    CommentModule
   ],
-  controllers: [AppController, UserController, CategoryController, ProductController],
+  controllers: [AppController, UserController, CategoryController, ProductController, CommentController],
   providers: [AppService],
 })
 export class AppModule {}

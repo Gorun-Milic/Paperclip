@@ -1,4 +1,5 @@
-import { Column, Entity, JoinColumn, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToMany, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Comment } from "./comment";
 import { Product } from "./product";
 
 @Entity()
@@ -29,5 +30,9 @@ export class User {
 
   @OneToMany(type => Product, product => product.user) 
   products: Product[];
+
+  @OneToMany(type => Comment, comment => comment.user)
+  comments: Comment[];
+
   
 }

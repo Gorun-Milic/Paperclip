@@ -1,5 +1,6 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinTable, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { Category } from "./category";
+import { Comment } from "./comment";
 import { User } from "./user";
 
 @Entity()
@@ -15,14 +16,20 @@ export class Product {
   description: string;
 
   @Column({
-    type: 'longblob'
+    type: 'longblob',
+    default: null
   })
   photo: string;
 
-  @ManyToOne(type => Category, category => category.products)
+  @ManyToOne(type => Category, category => category.products, {
+    eager: true,
+  })
   category: Category;
 
   @ManyToOne(type => User, user => user.products)
   user: User;
+
+  @OneToMany(type => Comment, comment => comment.product)
+  comments: Comment[];
 
 }

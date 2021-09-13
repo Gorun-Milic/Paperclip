@@ -28,11 +28,20 @@ export class User {
   @Column()
   zipcode: string;
 
+  @Column({
+    type: 'longblob',
+    default: null
+  })
+  photo: string;
+
   @OneToMany(type => Product, product => product.user) 
   products: Product[];
 
   @OneToMany(type => Comment, comment => comment.user)
   comments: Comment[];
+
+  @OneToMany(type => Comment, likes => likes.user)
+  likes: Comment[];
 
   
 }

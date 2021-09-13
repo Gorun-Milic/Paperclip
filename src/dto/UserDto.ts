@@ -7,4 +7,5 @@ export class UserDto {
     country: string
     city: string
     zipcode: string
+    photo: string
 }

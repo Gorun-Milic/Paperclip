@@ -1,13 +1,13 @@
 import { ProductDto } from "src/dto/productDto";
 import { Product } from "src/entity/product";
-import { byteToBase64 } from "./byteTobase64";
+import { productMapper } from "./productMapper";
 
-export function PhotoArrayMapper(products: Product[]): ProductDto[] {
+export function productArrayMapper(products: Product[]): ProductDto[] {
 
     let productDtos: ProductDto[] = [];
 
     for (let i=0; i<products.length; i++) {
-        productDtos.push(byteToBase64(products[i]));
+        productDtos.push(productMapper(products[i]));
     }
 
     return productDtos;

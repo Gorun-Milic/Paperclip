@@ -37,7 +37,7 @@ export class ProductController {
 
     @Post('pagination')
     async pagination(@Body() searchProduct: SearchProduct): Promise<ProductPagination> {
-        return await this.productService.pagination(searchProduct);
+        return await this.productService.pagination2(searchProduct);
     }
 
 }

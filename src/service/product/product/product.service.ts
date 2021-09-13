@@ -7,8 +7,8 @@ import { UserDto } from 'src/dto/UserDto';
 import { Product } from 'src/entity/product';
 import { User } from 'src/entity/user';
 import { ExceptionMessageEnum } from 'src/globals/ExceptionMessageEnum.enum';
-import { byteToBase64 } from 'src/globals/functions/byteTobase64';
-import { PhotoArrayMapper } from 'src/globals/functions/photoArrayMapper';
+import { productMapper } from 'src/globals/functions/productMapper';
+import { productArrayMapper } from 'src/globals/functions/productArrayMapper';
 import { Like, Repository } from 'typeorm';
 
 @Injectable()
@@ -20,7 +20,6 @@ export class ProductService {
     ){}
 
     async addProduct(productDto, photo) {
-        console.log("Dtooooo: " + productDto.name + " " + productDto.description + " u: " + productDto.user.firstName + " c: " + productDto.category.name);
         let productEntity =  new Product();
         productEntity.name = productDto.name;
         productEntity.description = productDto.description;
@@ -36,11 +35,11 @@ export class ProductService {
         const products = await this.productRepository.find();
         if (!products) {
             throw new HttpException(
-                ExceptionMessageEnum.FIT_PASS_USER_NOT_FOUND,
+                ExceptionMessageEnum.PRODUCTS_NOT_FOUND,
                 HttpStatus.BAD_REQUEST,
             )
         }else {
-            return PhotoArrayMapper(products);
+            return productArrayMapper(products);
         }
     }
 
@@ -50,11 +49,11 @@ export class ProductService {
         });
         if (!products) {
             throw new HttpException(
-                ExceptionMessageEnum.FIT_PASS_USER_NOT_FOUND,
+                ExceptionMessageEnum.USER_PRODUCTS_NOT_FOUND,
                 HttpStatus.BAD_REQUEST,
             )
         }else {
-            return PhotoArrayMapper(products);
+            return productArrayMapper(products);
         }
     }
     
@@ -62,29 +61,116 @@ export class ProductService {
         const product: Product = await this.productRepository.findOne(id);
         if (!product) {
             throw new HttpException(
-                ExceptionMessageEnum.FIT_PASS_USER_NOT_FOUND,
+                ExceptionMessageEnum.PRODUCT_NOT_FOUND,
                 HttpStatus.BAD_REQUEST,
             )
         }else {
-            let productDto = byteToBase64(product);
+            let productDto = productMapper(product);
             return productDto;
         }
     }
 
     async pagination(searchProduct: SearchProduct): Promise<ProductPagination> {
-        console.log(searchProduct.category.id);
-        console.log("Usao: " + searchProduct.name + ", " + searchProduct.currentPage + ", " + searchProduct.pageSize + "," + searchProduct.category.name);
+        // console.log(searchProduct.category.id);
+        // console.log("Usao: " + searchProduct.name + ", " + searchProduct.currentPage + ", " + searchProduct.pageSize + "," + searchProduct.category.name);
         const skip = searchProduct.pageSize * (searchProduct.currentPage-1);
 
+        let result = [];
+        let total = 0;
+
+        console.log("Size: " + result.length);
+        
+        if (searchProduct.name==='' && searchProduct.category!==undefined) {
+            console.log("AAAAAAA" + ", Is pr? " + searchProduct.isProduct );
+             [result, total] = await this.productRepository.findAndCount({
+                where: [{category: {id: searchProduct.category.id}}, {category: {isProduct: searchProduct.isProduct}}],
+                relations: ['category'],
+                take: searchProduct.pageSize,
+                skip: skip
+            });
+        }else if (searchProduct.name==='' && searchProduct.category===undefined) {
+            console.log("BBBB" + ", Is pr? " + searchProduct.isProduct );
+            [result, total] = await this.productRepository.findAndCount({
+                where: [{category: {isProduct: searchProduct.isProduct}}],
+                relations: ['category'],
+                take: searchProduct.pageSize,
+                skip: skip
+            });
+        }else if(searchProduct.name!=='' && searchProduct.category===undefined) {
+            console.log("CCC" + ", Is pr? " + searchProduct.isProduct );
+            [result, total] = await this.productRepository.findAndCount({
+                where: [{name: Like('%' + searchProduct.name + '%')}, {category: {isProduct: searchProduct.isProduct}}],
+                relations: ['category'],
+                take: searchProduct.pageSize,
+                skip: skip
+            });
+        }else {
+            console.log("EEE" + ", Is pr? " + searchProduct.isProduct );
+            [result, total] = await this.productRepository.findAndCount({
+                where: [{name: Like('%' + searchProduct.name + '%')}, {category: {id: searchProduct.category.id}}, {category: {isProduct: searchProduct.isProduct}}],
+                relations: ['category'],
+                take: searchProduct.pageSize,
+                skip: skip
+            });
+        }
+
+        // if (searchProduct.name==="") {
+        //     searchProduct.name = undefined;
+        // }
+        
+        // const [result, total] = await this.productRepository.findAndCount({
+        //     where: [{name: Like('%' + searchProduct.name + '%')}, {category: {id: searchProduct.category.id}}, {category: {isProduct: searchProduct.isProduct}}],
+        //     relations: ['category'],
+        //     take: searchProduct.pageSize,
+        //     skip: skip
+        // });
+        
+
+        let productArray: ProductDto[] = productArrayMapper(result);
+
+        console.log(total);
+
+        return {
+            products: productArray,
+            total: total
+        };
+    }
+
+    async pagination2(searchProduct: SearchProduct): Promise<ProductPagination> { 
+        const skip = searchProduct.pageSize * (searchProduct.currentPage-1);
+
+        let whereArray = [];
+        let searchName = {};
+        if (searchProduct.name!=="") {
+            searchName = {
+                name: Like('%' + searchProduct.name + "%")
+            }
+            whereArray.push(searchName);
+        }
+
+        let searchCategory: {};
+        if (searchProduct.category!==undefined) {
+            searchCategory = {
+                category: {
+                    id: searchProduct.category.id
+                }
+            }
+            whereArray.push(searchCategory);
+        }
+        if (searchProduct.isProduct===true) {
+            whereArray.push({category: {isProduct: true}});
+        }else {
+            whereArray.push({category: {isProduct: false}});
+        }
 
         const [result, total] = await this.productRepository.findAndCount({
-            where: [{name: Like('%' + searchProduct.name + '%')}, {category: {id: searchProduct.category.id}}, {category: {isProduct: searchProduct.isProduct}}],
+            where: whereArray,
             relations: ['category'],
             take: searchProduct.pageSize,
             skip: skip
         });
 
-        let productArray: ProductDto[] = PhotoArrayMapper(result);
+        let productArray: ProductDto[] = productArrayMapper(result);
 
         return {
             products: productArray,

@@ -1,6 +1,7 @@
-import { Column, Entity, JoinTable, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinTable, Like, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { Category } from "./category";
 import { Comment } from "./comment";
+import { Likes } from "./likes";
 import { User } from "./user";
 
 @Entity()
@@ -31,5 +32,8 @@ export class Product {
 
   @OneToMany(type => Comment, comment => comment.product)
   comments: Comment[];
+
+  @OneToMany(type => Likes, likes => likes.product)
+  likes: Likes[];
 
 }

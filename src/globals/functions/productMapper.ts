@@ -1,6 +1,6 @@
 import { ProductDto } from "src/dto/productDto";
 
-export function byteToBase64(product) {
+export function productMapper(product) {
     let productDto: ProductDto = new ProductDto;
     productDto.id = product.id;
     productDto.name = product.name;

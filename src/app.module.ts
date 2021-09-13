@@ -13,9 +13,11 @@ import { CategoryModule } from './module/category/category/category.module';
 import { ProductController } from './controller/product/product/product.controller';
 import { ProductModule } from './module/product/product/product.module';
 import { CommentModule } from './module/comment/comment.module';
-import { CommentService } from './service/comment/comment.service';
 import { CommentController } from './controller/comment/comment.controller';
 import { Comment } from './entity/comment';
+import { LikesModule } from './module/likes/likes.module';
+import { LikesController } from './controller/likes/likes.controller';
+import { Likes } from './entity/likes';
 
 @Module({
   imports: [
@@ -26,16 +28,17 @@ import { Comment } from './entity/comment';
       username: 'newuser',
       password: 'newuser',
       database: 'paperclip',
-      entities: [User, Product, Category, Comment],
+      entities: [User, Product, Category, Comment, Likes],
       synchronize: true,
     }),
     ConfigModule.forRoot({ isGlobal: true }),
     UserModule,
     CategoryModule,
     ProductModule,
-    CommentModule
+    CommentModule,
+    LikesModule
   ],
-  controllers: [AppController, UserController, CategoryController, ProductController, CommentController],
+  controllers: [AppController, UserController, CategoryController, ProductController, CommentController, LikesController],
   providers: [AppService],
 })
 export class AppModule {}

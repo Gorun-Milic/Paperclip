@@ -26,7 +26,7 @@ export class CommentService {
         });
         if (!comments) {
             throw new HttpException(
-                ExceptionMessageEnum.FIT_PASS_USER_NOT_FOUND,
+                ExceptionMessageEnum.NO_COMMENTS,
                 HttpStatus.BAD_REQUEST,
             )
         }else {

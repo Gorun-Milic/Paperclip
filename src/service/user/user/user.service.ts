@@ -56,26 +56,35 @@ export class UserService {
         userEntity = await this.userRepository.save(user);
         return userMapper(userEntity);
     }
-    
-    async login(loginUserDto: LoginDto): Promise<UserDto> {
+
+    async findByEmail(email: string): Promise<any> {
         let userEntity = await this.userRepository.findOne({
-            email: loginUserDto.email,
+            email: email,
         });
-        if (!userEntity) {
-            throw new HttpException(
-            ExceptionMessageEnum.USER_WRONG_CREDENTIALS,
-            HttpStatus.BAD_REQUEST,
-            );
-        }
-        if (this.decrypte(userEntity.password) === loginUserDto.password) {
+        if (userEntity) {
             return userMapper(userEntity);
-        } else {
-            throw new HttpException(
-            ExceptionMessageEnum.WRONG_PASSWORD_ERROR,
-            HttpStatus.BAD_REQUEST,
-            );
         }
     }
+    
+    // async login(loginUserDto: LoginDto): Promise<UserDto> {
+    //     let userEntity = await this.userRepository.findOne({
+    //         email: loginUserDto.email,
+    //     });
+    //     if (!userEntity) {
+    //         throw new HttpException(
+    //         ExceptionMessageEnum.USER_WRONG_CREDENTIALS,
+    //         HttpStatus.BAD_REQUEST,
+    //         );
+    //     }
+    //     if (this.decrypte(userEntity.password) === loginUserDto.password) {
+    //         return userMapper(userEntity);
+    //     } else {
+    //         throw new HttpException(
+    //         ExceptionMessageEnum.WRONG_PASSWORD_ERROR,
+    //         HttpStatus.BAD_REQUEST,
+    //         );
+    //     }
+    // }
 
     async changePhoto(userId: string, photo): Promise<UserDto> {
         let userEntity =  await this.userRepository.findOne(userId);

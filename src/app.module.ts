@@ -18,6 +18,9 @@ import { Comment } from './entity/comment';
 import { LikesModule } from './module/likes/likes.module';
 import { LikesController } from './controller/likes/likes.controller';
 import { Likes } from './entity/likes';
+import { AuthModule } from './module/auth/auth.module';
+import { AuthService } from './service/auth/auth.service';
+import { AuthController } from './controller/auth/auth.controller';
 
 @Module({
   imports: [
@@ -36,9 +39,10 @@ import { Likes } from './entity/likes';
     CategoryModule,
     ProductModule,
     CommentModule,
-    LikesModule
+    LikesModule,
+    AuthModule
   ],
-  controllers: [AppController, UserController, CategoryController, ProductController, CommentController, LikesController],
+  controllers: [AppController, UserController, CategoryController, ProductController, CommentController, LikesController, AuthController],
   providers: [AppService],
 })
 export class AppModule {}

@@ -28,10 +28,11 @@ export class UserController {
         return await this.userService.registration(user);
     }
 
-    @Post('login')
-    async login(@Body() loginDto: LoginDto): Promise<UserDto> {
-        return await this.userService.login(loginDto);
-    }
+    // @Post('login')
+    // async login(@Body() loginDto: LoginDto): Promise<UserDto> {
+    //     console.log("EEEEEEEEEEEEE");
+    //     return await this.userService.login(loginDto);
+    // }
 
     @Post('changePhoto')
     @UseInterceptors(FileInterceptor('photo'))

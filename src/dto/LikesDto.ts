@@ -1,6 +1,6 @@
-import { User } from "src/entity/user";
+import { UserDto } from "./UserDto";
 
 export class LikesDto {
-    users: User[];
+    users: UserDto[];
     total: number;
 }

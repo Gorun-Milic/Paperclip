@@ -18,6 +18,8 @@ export class AuthService {
 
         if (user && user.password===this.encrypte(password)) {
             return user;
+        }else {
+            console.log('Wrong password');
         }
     }
 

@@ -2,6 +2,7 @@ import { Column, Entity, JoinTable, Like, ManyToMany, ManyToOne, OneToMany, Prim
 import { Category } from "./category";
 import { Comment } from "./comment";
 import { Likes } from "./likes";
+import { Save } from "./save";
 import { User } from "./user";
 
 @Entity()
@@ -35,5 +36,8 @@ export class Product {
 
   @OneToMany(type => Likes, likes => likes.product)
   likes: Likes[];
+
+  @OneToMany(type => Save, saved => saved.user)
+  saved: Save[];
 
 }

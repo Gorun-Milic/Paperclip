@@ -21,6 +21,10 @@ import { Likes } from './entity/likes';
 import { AuthModule } from './module/auth/auth.module';
 import { AuthService } from './service/auth/auth.service';
 import { AuthController } from './controller/auth/auth.controller';
+import { SaveModule } from './module/save/save.module';
+import { SaveController } from './controller/save/save.controller';
+import { SaveService } from './service/save/save.service';
+import { Save } from './entity/save';
 
 @Module({
   imports: [
@@ -31,7 +35,7 @@ import { AuthController } from './controller/auth/auth.controller';
       username: 'newuser',
       password: 'newuser',
       database: 'paperclip',
-      entities: [User, Product, Category, Comment, Likes],
+      entities: [User, Product, Category, Comment, Likes, Save],
       synchronize: true,
     }),
     ConfigModule.forRoot({ isGlobal: true }),
@@ -40,9 +44,10 @@ import { AuthController } from './controller/auth/auth.controller';
     ProductModule,
     CommentModule,
     LikesModule,
-    AuthModule
+    AuthModule,
+    SaveModule
   ],
-  controllers: [AppController, UserController, CategoryController, ProductController, CommentController, LikesController, AuthController],
+  controllers: [AppController, UserController, CategoryController, ProductController, CommentController, LikesController, AuthController, SaveController],
   providers: [AppService],
 })
 export class AppModule {}

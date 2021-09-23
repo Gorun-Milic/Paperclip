@@ -5,6 +5,7 @@ import { Likes } from 'src/entity/likes';
 import { Product } from 'src/entity/product';
 import { User } from 'src/entity/user';
 import { ExceptionMessageEnum } from 'src/globals/ExceptionMessageEnum.enum';
+import { userArrayMapper } from 'src/globals/functions/userArrayMapper';
 import { Repository } from 'typeorm';
 
 @Injectable()
@@ -76,7 +77,7 @@ export class LikesService {
         }
 
         return {
-            users: users,
+            users: userArrayMapper(users),
             total: total
         }
     

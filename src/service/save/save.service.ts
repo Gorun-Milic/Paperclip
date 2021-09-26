@@ -1,10 +1,12 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import e from 'express';
+import { SaveDto } from 'src/dto/SaveDto';
 import { Product } from 'src/entity/product';
 import { Save } from 'src/entity/save';
 import { User } from 'src/entity/user';
 import { ExceptionMessageEnum } from 'src/globals/ExceptionMessageEnum.enum';
+import { saveArrayMapper } from 'src/globals/functions/saveArrayMapper';
 import { Repository } from 'typeorm';
 
 @Injectable()
@@ -63,20 +65,22 @@ export class SaveService {
         }
     }
 
-    async savedByUser(user: User): Promise<Save[]> {
+    async savedByUser(user: User): Promise<SaveDto[]> {
+        console.log("SAVED BY: " + user.firstName)
         const save = await this.saveRepository.find({
             where: {
-                user: User,
+                user: user,
             },
-            relations: ["product"]
+            relations: ["product", "user"]
         });
+        console.log("NIJE STIGAO");
         if (!save) {
             throw new HttpException(
                 ExceptionMessageEnum.NO_SAVED_PRODUCT,
                 HttpStatus.BAD_REQUEST,
             )
         }else {
-            return save;
+            return saveArrayMapper(save);
         }
     }
 

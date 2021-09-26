@@ -2,18 +2,21 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { LikesDto } from 'src/dto/LikesDto';
 import { Likes } from 'src/entity/likes';
+import { Notification } from 'src/entity/notification';
 import { Product } from 'src/entity/product';
 import { User } from 'src/entity/user';
 import { ExceptionMessageEnum } from 'src/globals/ExceptionMessageEnum.enum';
 import { userArrayMapper } from 'src/globals/functions/userArrayMapper';
 import { Repository } from 'typeorm';
+import { NotificationService } from '../notification/notification.service';
 
 @Injectable()
 export class LikesService {
 
     constructor(
         @InjectRepository(Likes)
-        private likesRepository: Repository<Likes>
+        private likesRepository: Repository<Likes>,
+        private notificationService: NotificationService
     ) {}
 
     async addLike(like: Likes): Promise<Likes> {
@@ -29,9 +32,20 @@ export class LikesService {
                 HttpStatus.BAD_REQUEST,
             )
         }else {
+            let notification = await this.addNotifiaction(like.product, like.user);
             return await this.likesRepository.save(like);
         }
     }
+
+    async addNotifiaction(product: Product, user: User): Promise<Notification> {
+        let notification: Notification = new Notification();
+        notification.user = user;
+        notification.product = product;
+        notification.seen = 0;
+        notification.type = 'like';
+        return await this.notificationService.addNotification(notification);
+    }
+
 
     async dislike(id: string): Promise<Likes> {
         let liked = await this.likesRepository.findOne(id);

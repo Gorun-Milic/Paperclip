@@ -1,5 +1,6 @@
 import { Column, Entity, JoinColumn, ManyToMany, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { Comment } from "./comment";
+import { Notification } from "./notification";
 import { Product } from "./product";
 import { Save } from "./save";
 
@@ -46,5 +47,8 @@ export class User {
 
   @OneToMany(type => Save, saved => saved.user)
   saved: Save[];
+
+  @OneToMany(type => Notification, notification => notification.user)
+  notifications: Notification[];
 
 }

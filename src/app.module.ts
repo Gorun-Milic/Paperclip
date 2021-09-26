@@ -25,6 +25,10 @@ import { SaveModule } from './module/save/save.module';
 import { SaveController } from './controller/save/save.controller';
 import { SaveService } from './service/save/save.service';
 import { Save } from './entity/save';
+import { NotificationModule } from './module/notification/notification.module';
+import { NotificationService } from './service/notification/notification.service';
+import { NotificationController } from './controller/notification/notification.controller';
+import { Notification } from './entity/notification';
 
 @Module({
   imports: [
@@ -35,7 +39,7 @@ import { Save } from './entity/save';
       username: 'newuser',
       password: 'newuser',
       database: 'paperclip',
-      entities: [User, Product, Category, Comment, Likes, Save],
+      entities: [User, Product, Category, Comment, Likes, Save, Notification],
       synchronize: true,
     }),
     ConfigModule.forRoot({ isGlobal: true }),
@@ -45,9 +49,10 @@ import { Save } from './entity/save';
     CommentModule,
     LikesModule,
     AuthModule,
-    SaveModule
+    SaveModule,
+    NotificationModule
   ],
-  controllers: [AppController, UserController, CategoryController, ProductController, CommentController, LikesController, AuthController, SaveController],
+  controllers: [AppController, UserController, CategoryController, ProductController, CommentController, LikesController, AuthController, SaveController, NotificationController],
   providers: [AppService],
 })
 export class AppModule {}

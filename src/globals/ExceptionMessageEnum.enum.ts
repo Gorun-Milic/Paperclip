@@ -20,5 +20,9 @@ export enum ExceptionMessageEnum {
     /* Save exception messages */
     ALREADY_SAVED = 'Product already saved by this user',
     NO_SAVED_PRODUCT = 'There are no saved products for this user',
-    NOT_SAVED = 'Product is not saved'
-  }
+    NOT_SAVED = 'Product is not saved',
+
+    /* Notification exception messages */
+    NO_NEW_NOTIFICATION = 'Currently there is no unseen notification',
+    NO_OLD_NOTIFICATION = 'Currently there is no unseen notification'
+}

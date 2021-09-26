@@ -2,6 +2,7 @@ import { Column, Entity, JoinTable, Like, ManyToMany, ManyToOne, OneToMany, Prim
 import { Category } from "./category";
 import { Comment } from "./comment";
 import { Likes } from "./likes";
+import { Notification } from "./notification";
 import { Save } from "./save";
 import { User } from "./user";
 
@@ -28,7 +29,9 @@ export class Product {
   })
   category: Category;
 
-  @ManyToOne(type => User, user => user.products)
+  @ManyToOne(type => User, user => user.products, {
+    eager: true
+  })
   user: User;
 
   @OneToMany(type => Comment, comment => comment.product)
@@ -39,5 +42,8 @@ export class Product {
 
   @OneToMany(type => Save, saved => saved.user)
   saved: Save[];
+
+  @OneToMany(type => Notification, notification => notification.product)
+  notifications: Notification[];
 
 }

@@ -24,5 +24,14 @@ export enum ExceptionMessageEnum {
 
     /* Notification exception messages */
     NO_NEW_NOTIFICATION = 'Currently there is no unseen notification',
-    NO_OLD_NOTIFICATION = 'Currently there is no unseen notification'
+    NO_OLD_NOTIFICATION = 'Currently there is no unseen notification',
+
+    /* Chat exception messages */
+    NO_CHAT = "There is no chat beetween two users",
+    CHAT_ALREADY_EXISTS = "Chat already exists",
+    NO_CHATS = "There is no chat for this user",
+
+    /* Message exception messages */
+    NO_MESSAGES = "No messages",
+    NO_LAST_MESSAGES = "Unable to find last message"
 }

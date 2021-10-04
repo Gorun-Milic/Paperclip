@@ -1,5 +1,7 @@
 import { Column, Entity, JoinColumn, ManyToMany, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Chat } from "./chat";
 import { Comment } from "./comment";
+import { Message } from "./message";
 import { Notification } from "./notification";
 import { Product } from "./product";
 import { Save } from "./save";
@@ -50,5 +52,14 @@ export class User {
 
   @OneToMany(type => Notification, notification => notification.user)
   notifications: Notification[];
+
+  @OneToMany(type => Chat, chat => chat.user1)
+  chats1: Chat[];
+
+  @OneToMany(type => Chat, chat => chat.user2)
+  chats2: Chat[];
+
+  @OneToMany(type => Message, message => message.user) 
+  messages: Message[];
 
 }

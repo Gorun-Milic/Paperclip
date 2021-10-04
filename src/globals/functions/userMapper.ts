@@ -3,6 +3,7 @@ import { UserDto } from "src/dto/UserDto";
 export function userMapper(user): UserDto {
     let userDto: UserDto = new UserDto;
 
+    console.log("User je undefined? " +  user)
     userDto.id = user.id;
     userDto.firstName = user.firstName;
     userDto.lastName = user.lastName;

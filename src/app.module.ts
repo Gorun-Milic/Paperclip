@@ -19,16 +19,19 @@ import { LikesModule } from './module/likes/likes.module';
 import { LikesController } from './controller/likes/likes.controller';
 import { Likes } from './entity/likes';
 import { AuthModule } from './module/auth/auth.module';
-import { AuthService } from './service/auth/auth.service';
 import { AuthController } from './controller/auth/auth.controller';
 import { SaveModule } from './module/save/save.module';
 import { SaveController } from './controller/save/save.controller';
-import { SaveService } from './service/save/save.service';
 import { Save } from './entity/save';
 import { NotificationModule } from './module/notification/notification.module';
-import { NotificationService } from './service/notification/notification.service';
 import { NotificationController } from './controller/notification/notification.controller';
 import { Notification } from './entity/notification';
+import { ChatModule } from './module/chat/chat.module';
+import { MessageModule } from './module/message/message.module';
+import { ChatController } from './controller/chat/chat.controller';
+import { MessageController } from './controller/message/message.controller';
+import { Chat } from './entity/chat';
+import { Message } from './entity/message';
 
 @Module({
   imports: [
@@ -39,7 +42,7 @@ import { Notification } from './entity/notification';
       username: 'newuser',
       password: 'newuser',
       database: 'paperclip',
-      entities: [User, Product, Category, Comment, Likes, Save, Notification],
+      entities: [User, Product, Category, Comment, Likes, Save, Notification, Chat, Message],
       synchronize: true,
     }),
     ConfigModule.forRoot({ isGlobal: true }),
@@ -50,9 +53,11 @@ import { Notification } from './entity/notification';
     LikesModule,
     AuthModule,
     SaveModule,
-    NotificationModule
+    NotificationModule,
+    ChatModule,
+    MessageModule
   ],
-  controllers: [AppController, UserController, CategoryController, ProductController, CommentController, LikesController, AuthController, SaveController, NotificationController],
+  controllers: [AppController, UserController, CategoryController, ProductController, CommentController, LikesController, AuthController, SaveController, NotificationController, ChatController, MessageController],
   providers: [AppService],
 })
 export class AppModule {}

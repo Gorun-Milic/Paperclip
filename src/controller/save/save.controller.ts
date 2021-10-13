@@ -1,5 +1,6 @@
 import { Body, Controller, Delete, Param, Post } from '@nestjs/common';
 import { SaveDto } from 'src/dto/SaveDto';
+import { Offer } from 'src/entity/offer';
 import { Save } from 'src/entity/save';
 import { User } from 'src/entity/user';
 import { SaveService } from 'src/service/save/save.service';
@@ -29,6 +30,11 @@ export class SaveController {
     @Post('savedByUser')
     async savedByUser(@Body() user: User): Promise<SaveDto[]> {
         return await this.saveService.savedByUser(user);
+    }
+
+    @Post('deleteSaves')
+    async deleteSaves(@Body() offer: Offer): Promise<any> {
+        return await this.saveService.deleteSaves(offer);
     }
 
 }

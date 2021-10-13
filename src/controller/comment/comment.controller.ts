@@ -1,5 +1,6 @@
 import { Body, Controller, Post } from '@nestjs/common';
 import { Comment } from 'src/entity/comment';
+import { Offer } from 'src/entity/offer';
 import { Product } from 'src/entity/product';
 import { CommentService } from 'src/service/comment/comment.service';
 
@@ -20,6 +21,11 @@ export class CommentController {
     @Post('commentsForProduct')
     async commentsForProduct(@Body() product: Product): Promise<Comment[]> {
         return await this.commentService.commentsForProduct(product);
+    }
+
+    @Post('deleteComments')
+    async deleteComments(@Body() offer: Offer): Promise<any> {
+        return await this.commentService.deleteComments(offer);
     }
 
 }

@@ -7,6 +7,7 @@ import { Repository } from 'typeorm';
 import { Notification } from 'src/entity/notification';
 import { NotificationService } from '../notification/notification.service';
 import { User } from 'src/entity/user';
+import { Offer } from 'src/entity/offer';
 
 @Injectable()
 export class CommentService {
@@ -46,6 +47,30 @@ export class CommentService {
         notification.seen = 0;
         notification.type = 'comment';
         return await this.notificationService.addNotification(notification);
+    }
+
+    //nakon prihvatanja neke ponude, brisemo sve komentare
+    //sa produkta iz ponude
+    //kako bismo kasnije te produkte razmenili
+    async deleteComments(offer: Offer): Promise<any> {
+        let res = await this.commentRepository.createQueryBuilder("comment")
+        .innerJoin("comment.product", "product")
+        .delete()
+        .from(Comment)
+        .where("product.id = :oId", {oId: offer.offeredProduct.id})
+        .orWhere("product.id = :rId", {rId: offer.receivedProduct.id})
+        .execute();
+
+        console.log(res);
+
+        if (res) {
+            return res;
+        }else {
+            throw new HttpException(
+                ExceptionMessageEnum.COMMENTS_NOT_DELETED,
+                HttpStatus.BAD_REQUEST,
+            )
+        }
     }
 
     

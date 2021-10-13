@@ -10,6 +10,7 @@ import { ExceptionMessageEnum } from 'src/globals/ExceptionMessageEnum.enum';
 import { productMapper } from 'src/globals/functions/productMapper';
 import { productArrayMapper } from 'src/globals/functions/productArrayMapper';
 import { Like, Repository } from 'typeorm';
+import { Offer } from 'src/entity/offer';
 
 @Injectable()
 export class ProductService {
@@ -176,6 +177,34 @@ export class ProductService {
             products: productArray,
             total: total
         };
+    }
+
+    //nakon sto se prihvati ponuda i sto se izbrisu lajkovi i komentari iz produkta
+    //razmenjujemo produkte(user koji je poslao ponuda dobija receivedProduct)
+    //(user koji je primio ponudu dobija offeredProduct)
+    async exchangeProducts(offer: Offer): Promise<any> {
+        let res = await this.productRepository.createQueryBuilder("product")
+        .innerJoin("product.user", "user")
+        .update(Product)
+        .set({user: offer.sender})
+        .where("product.id = :id", {id: offer.receivedProduct.id})
+        .execute();
+
+        let res1 = await this.productRepository.createQueryBuilder("product")
+        .innerJoin("product.user", "user")
+        .update(Product)
+        .set({user: offer.receiver})
+        .where("product.id = :id", {id: offer.offeredProduct.id})
+        .execute();
+        
+        if (res && res1) {
+            return res1;
+        }else {
+            throw new HttpException(
+                ExceptionMessageEnum.PRODUCTS_NOT_EXCHANGED,
+                HttpStatus.BAD_REQUEST,
+            )
+        }
     }
 
 }

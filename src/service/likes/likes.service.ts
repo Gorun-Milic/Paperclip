@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { LikesDto } from 'src/dto/LikesDto';
 import { Likes } from 'src/entity/likes';
 import { Notification } from 'src/entity/notification';
+import { Offer } from 'src/entity/offer';
 import { Product } from 'src/entity/product';
 import { User } from 'src/entity/user';
 import { ExceptionMessageEnum } from 'src/globals/ExceptionMessageEnum.enum';
@@ -95,6 +96,31 @@ export class LikesService {
             total: total
         }
     
+    }
+
+    //nakon prihvatanja neke ponude, brisemo sve lajkove
+    //sa produkta iz ponude
+    //kako bismo kasnije te produkte razmenili
+    async deleteLikes(offer: Offer): Promise<any> {
+        let res = await this.likesRepository
+        .createQueryBuilder("likes")
+        .innerJoin("likes.product", "product")
+        .delete()
+        .from(Likes)
+        .where("product.id = :oId", {oId: offer.offeredProduct.id})
+        .orWhere("product.id = :rId", {rId: offer.receivedProduct.id})
+        .execute();
+
+        console.log(res);
+
+        if (res) {
+            return res;
+        }else {
+            throw new HttpException(
+                ExceptionMessageEnum.LIKES_NOT_DELETED,
+                HttpStatus.BAD_REQUEST,
+            )
+        }
     }
 
 }

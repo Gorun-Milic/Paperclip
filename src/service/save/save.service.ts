@@ -2,6 +2,7 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import e from 'express';
 import { SaveDto } from 'src/dto/SaveDto';
+import { Offer } from 'src/entity/offer';
 import { Product } from 'src/entity/product';
 import { Save } from 'src/entity/save';
 import { User } from 'src/entity/user';
@@ -81,6 +82,27 @@ export class SaveService {
             )
         }else {
             return saveArrayMapper(save);
+        }
+    }
+
+    async deleteSaves(offer: Offer): Promise<any> {
+        let res = await this.saveRepository.createQueryBuilder("save")
+        .innerJoin("save.product", "product")
+        .delete()
+        .from(Save)
+        .where("product.id = :oId", {oId: offer.offeredProduct.id})
+        .orWhere("product.id = :rId", {rId: offer.receivedProduct.id})
+        .execute();
+
+        console.log(res);
+
+        if (res) {
+            return res;
+        }else {
+            throw new HttpException(
+                ExceptionMessageEnum.SAVES_NOT_DELETED,
+                HttpStatus.BAD_REQUEST,
+            )
         }
     }
 

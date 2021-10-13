@@ -8,10 +8,10 @@ export class Likes {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @ManyToOne(type => Product, product => product.likes) 
+  @ManyToOne(type => Product, product => product.likes, {onDelete: 'CASCADE'}) 
   product: Product;
 
-  @ManyToOne(type => User, user => user.likes) 
+  @ManyToOne(type => User, user => user.likes, {onDelete: 'CASCADE'}) 
   user: User;
 
 }

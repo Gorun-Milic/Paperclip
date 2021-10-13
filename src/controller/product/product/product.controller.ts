@@ -4,6 +4,7 @@ import { ProductDto } from 'src/dto/productDto';
 import { ProductPagination } from 'src/dto/ProductPagination';
 import { SearchProduct } from 'src/dto/SearchProduct';
 import { UserDto } from 'src/dto/UserDto';
+import { Offer } from 'src/entity/offer';
 import { Product } from 'src/entity/product';
 import { User } from 'src/entity/user';
 import { ProductService } from 'src/service/product/product/product.service';
@@ -38,6 +39,11 @@ export class ProductController {
     @Post('pagination')
     async pagination(@Body() searchProduct: SearchProduct): Promise<ProductPagination> {
         return await this.productService.pagination2(searchProduct);
+    }
+
+    @Post('exchange')
+    async exchangeProducts(@Body() offer: Offer): Promise<any> {
+        return await this.productService.exchangeProducts(offer);
     }
 
 }

@@ -3,6 +3,7 @@ import { Chat } from "./chat";
 import { Comment } from "./comment";
 import { Message } from "./message";
 import { Notification } from "./notification";
+import { Offer } from "./offer";
 import { Product } from "./product";
 import { Save } from "./save";
 
@@ -61,5 +62,11 @@ export class User {
 
   @OneToMany(type => Message, message => message.user) 
   messages: Message[];
+
+  @OneToMany(type => Offer, offer => offer.sender)
+  senders: Offer[];
+
+  @OneToMany(type => Offer, offer => offer.receiver)
+  receivers: Offer[];
 
 }

@@ -1,6 +1,7 @@
 import { Body, Controller, Delete, Param, Post } from '@nestjs/common';
 import { LikesDto } from 'src/dto/LikesDto';
 import { Likes } from 'src/entity/likes';
+import { Offer } from 'src/entity/offer';
 import { Product } from 'src/entity/product';
 import { LikesService } from 'src/service/likes/likes.service';
 
@@ -33,6 +34,11 @@ export class LikesController {
     async dislike(@Param('id') id): Promise<Likes> {
         console.log("STIGAOOOOOOOOOOOOOOOOO: ");
         return await this.likesService.dislike(id);
+    }
+
+    @Post('deleteLikes')
+    async deleteLikes(@Body() offer: Offer): Promise<any> {
+        return await this.likesService.deleteLikes(offer);
     }
 
 }

@@ -32,6 +32,10 @@ import { ChatController } from './controller/chat/chat.controller';
 import { MessageController } from './controller/message/message.controller';
 import { Chat } from './entity/chat';
 import { Message } from './entity/message';
+import { Offer } from './entity/offer';
+import { OfferModule } from './module/offer/offer.module';
+import { OfferService } from './service/offer/offer.service';
+import { OfferController } from './controller/offer/offer.controller';
 
 @Module({
   imports: [
@@ -42,7 +46,7 @@ import { Message } from './entity/message';
       username: 'newuser',
       password: 'newuser',
       database: 'paperclip',
-      entities: [User, Product, Category, Comment, Likes, Save, Notification, Chat, Message],
+      entities: [User, Product, Category, Comment, Likes, Save, Notification, Chat, Message, Offer],
       synchronize: true,
     }),
     ConfigModule.forRoot({ isGlobal: true }),
@@ -55,9 +59,10 @@ import { Message } from './entity/message';
     SaveModule,
     NotificationModule,
     ChatModule,
-    MessageModule
+    MessageModule,
+    OfferModule
   ],
-  controllers: [AppController, UserController, CategoryController, ProductController, CommentController, LikesController, AuthController, SaveController, NotificationController, ChatController, MessageController],
+  controllers: [AppController, UserController, CategoryController, ProductController, CommentController, LikesController, AuthController, SaveController, NotificationController, ChatController, MessageController, OfferController],
   providers: [AppService],
 })
 export class AppModule {}

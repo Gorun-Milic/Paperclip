@@ -11,6 +11,8 @@ import { productMapper } from 'src/globals/functions/productMapper';
 import { productArrayMapper } from 'src/globals/functions/productArrayMapper';
 import { Like, Repository } from 'typeorm';
 import { Offer } from 'src/entity/offer';
+import { SearchProductParams } from 'src/dto/SearchProductParamsDto';
+import { first } from 'rxjs';
 
 @Injectable()
 export class ProductService {
@@ -44,7 +46,7 @@ export class ProductService {
         }
     }
 
-    async productsOfUser(user: UserDto): Promise<ProductDto[]> {
+    async productsOfUser(user: User): Promise<ProductDto[]> {
         const products = await this.productRepository.find({
             user: user
         });
@@ -72,17 +74,15 @@ export class ProductService {
     }
 
     async pagination(searchProduct: SearchProduct): Promise<ProductPagination> {
-        // console.log(searchProduct.category.id);
-        // console.log("Usao: " + searchProduct.name + ", " + searchProduct.currentPage + ", " + searchProduct.pageSize + "," + searchProduct.category.name);
         const skip = searchProduct.pageSize * (searchProduct.currentPage-1);
 
         let result = [];
         let total = 0;
 
-        console.log("Size: " + result.length);
+        
         
         if (searchProduct.name==='' && searchProduct.category!==undefined) {
-            console.log("AAAAAAA" + ", Is pr? " + searchProduct.isProduct );
+            
              [result, total] = await this.productRepository.findAndCount({
                 where: [{category: {id: searchProduct.category.id}}, {category: {isProduct: searchProduct.isProduct}}],
                 relations: ['category'],
@@ -90,7 +90,7 @@ export class ProductService {
                 skip: skip
             });
         }else if (searchProduct.name==='' && searchProduct.category===undefined) {
-            console.log("BBBB" + ", Is pr? " + searchProduct.isProduct );
+            
             [result, total] = await this.productRepository.findAndCount({
                 where: [{category: {isProduct: searchProduct.isProduct}}],
                 relations: ['category'],
@@ -98,7 +98,7 @@ export class ProductService {
                 skip: skip
             });
         }else if(searchProduct.name!=='' && searchProduct.category===undefined) {
-            console.log("CCC" + ", Is pr? " + searchProduct.isProduct );
+            
             [result, total] = await this.productRepository.findAndCount({
                 where: [{name: Like('%' + searchProduct.name + '%')}, {category: {isProduct: searchProduct.isProduct}}],
                 relations: ['category'],
@@ -106,7 +106,7 @@ export class ProductService {
                 skip: skip
             });
         }else {
-            console.log("EEE" + ", Is pr? " + searchProduct.isProduct );
+            
             [result, total] = await this.productRepository.findAndCount({
                 where: [{name: Like('%' + searchProduct.name + '%')}, {category: {id: searchProduct.category.id}}, {category: {isProduct: searchProduct.isProduct}}],
                 relations: ['category'],
@@ -129,7 +129,7 @@ export class ProductService {
 
         let productArray: ProductDto[] = productArrayMapper(result);
 
-        console.log(total);
+        
 
         return {
             products: productArray,
@@ -141,6 +141,7 @@ export class ProductService {
         const skip = searchProduct.pageSize * (searchProduct.currentPage-1);
 
         let whereArray = [];
+
         let searchName = {};
         if (searchProduct.name!=="") {
             searchName = {
@@ -158,6 +159,8 @@ export class ProductService {
             }
             whereArray.push(searchCategory);
         }
+
+
         if (searchProduct.isProduct===true) {
             whereArray.push({category: {isProduct: true}});
         }else {
@@ -178,6 +181,74 @@ export class ProductService {
             total: total
         };
     }
+
+    async pagination3(searchProduct: SearchProductParams): Promise<ProductPagination> { 
+
+        console.log(searchProduct);
+
+        const skip = searchProduct.pageSize * (searchProduct.currentPage-1);
+
+        let whereArray = [];
+        let firstCondition = undefined;
+        let secondCondition = undefined;
+        let isProduct = true;
+
+        if (searchProduct.type==='Product') {
+            isProduct = true;
+        }else if (searchProduct.type==='Service') {
+            isProduct = false;
+        }
+
+        if (searchProduct.categoryName==='All' && searchProduct.type==='All') {
+            firstCondition = {
+                name: Like('%' + searchProduct.name + "%")
+            }
+        }else if (searchProduct.categoryName!=='All' && searchProduct.type==='All') {
+            firstCondition = {
+                name: Like('%' + searchProduct.name + "%"),
+                category: { name: searchProduct.categoryName }
+            }
+        }else if (searchProduct.categoryName==='All' && searchProduct.type!=='All') {
+            firstCondition = {
+                name: Like('%' + searchProduct.name + "%"),
+                category: { isProduct: isProduct }
+            }
+        }else if (searchProduct.categoryName!=='All' && searchProduct.type!=='All') {
+            firstCondition = {
+                name: Like('%' + searchProduct.name + "%"),
+                category: { isProduct: isProduct }
+            };
+            secondCondition = {
+                name: Like('%' + searchProduct.name + "%"),
+                category: { name: searchProduct.categoryName } 
+            };
+        }
+
+        if(firstCondition) {
+            whereArray.push(firstCondition);
+        }
+
+        if(secondCondition) {
+            whereArray.push(secondCondition);
+        }
+        
+
+        const [result, total] = await this.productRepository.findAndCount({
+            where: whereArray,
+            relations: ['category'],
+            take: searchProduct.pageSize,
+            skip: skip
+        });
+
+        let productArray: ProductDto[] = productArrayMapper(result);
+
+        return {
+            products: productArray,
+            total: total
+        };
+    
+    }
+
 
     //nakon sto se prihvati ponuda i sto se izbrisu lajkovi i komentari iz produkta
     //razmenjujemo produkte(user koji je poslao ponuda dobija receivedProduct)

@@ -7,7 +7,6 @@ export function saveArrayMapper(saveArray: Save[]): SaveDto[] {
     let saveDtos: SaveDto[] = [];
 
     for (let i=0; i<saveArray.length; i++) {
-        console.log(saveArray[i]);
         saveDtos.push(saveMapper(saveArray[i]));
     }
 

@@ -102,7 +102,6 @@ export class ChatService {
             relations: ['user1', 'user2']
         })
         if (res) {
-            console.log("Chattt: " + res);
             throw new HttpException(
                 ExceptionMessageEnum.CHAT_ALREADY_EXISTS,
                 HttpStatus.BAD_REQUEST,

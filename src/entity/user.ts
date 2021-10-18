@@ -1,6 +1,8 @@
-import { Column, Entity, JoinColumn, ManyToMany, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToMany, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { Chat } from "./chat";
+import { City } from "./city";
 import { Comment } from "./comment";
+import { Country } from "./country";
 import { Message } from "./message";
 import { Notification } from "./notification";
 import { Offer } from "./offer";
@@ -25,12 +27,6 @@ export class User {
   password: string;  
 
   @Column()
-  country: string;
-
-  @Column()
-  city: string;
-
-  @Column()
   zipcode: string;
 
   @Column({
@@ -38,6 +34,9 @@ export class User {
     default: null
   })
   photo: string;
+
+  @ManyToOne(type => City, city => city.users)
+  city: City;
 
   @OneToMany(type => Product, product => product.user) 
   products: Product[];

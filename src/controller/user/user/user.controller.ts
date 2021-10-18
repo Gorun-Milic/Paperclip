@@ -2,6 +2,7 @@ import { Body, Controller, Get, Param, Post, UploadedFile, UseInterceptors } fro
 import { FileInterceptor } from '@nestjs/platform-express';
 import { LoginDto } from 'src/dto/LoginDto';
 import { SearchUser } from 'src/dto/SearchUser';
+import { SearchUserParamsDto } from 'src/dto/SearchUserParamsDto';
 import { UserDto } from 'src/dto/UserDto';
 import { UserPagination } from 'src/dto/UserPagination';
 import { Product } from 'src/entity/product';
@@ -43,6 +44,11 @@ export class UserController {
     @Post('pagination')
     async pagination(@Body() searchUser: SearchUser): Promise<UserPagination> {
         return await this.userService.pagination(searchUser);
+    }
+
+    @Post('pagination1')
+    async pagination1(@Body() searchUser: SearchUserParamsDto): Promise<UserPagination> {
+        return await this.userService.pagination1(searchUser);
     }
 
 }

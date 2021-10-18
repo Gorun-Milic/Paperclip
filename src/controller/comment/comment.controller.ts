@@ -13,7 +13,6 @@ export class CommentController {
 
     @Post()
     async addComment(@Body() comment: Comment): Promise<Comment> {
-        console.log("STIGAOOOOOOOOOOOOOOOOO: " + comment.date);
         comment.date = new Date();
         return await this.commentService.addComment(comment);
     }

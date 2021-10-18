@@ -67,14 +67,12 @@ export class SaveService {
     }
 
     async savedByUser(user: User): Promise<SaveDto[]> {
-        console.log("SAVED BY: " + user.firstName)
         const save = await this.saveRepository.find({
             where: {
                 user: user,
             },
             relations: ["product", "user"]
         });
-        console.log("NIJE STIGAO");
         if (!save) {
             throw new HttpException(
                 ExceptionMessageEnum.NO_SAVED_PRODUCT,
@@ -93,8 +91,6 @@ export class SaveService {
         .where("product.id = :oId", {oId: offer.offeredProduct.id})
         .orWhere("product.id = :rId", {rId: offer.receivedProduct.id})
         .execute();
-
-        console.log(res);
 
         if (res) {
             return res;

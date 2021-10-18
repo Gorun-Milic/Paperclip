@@ -12,6 +12,12 @@ export enum ExceptionMessageEnum {
     USER_PRODUCTS_NOT_FOUND = 'User products are not found',
     PRODUCTS_NOT_EXCHANGED = "Unable to exchange products",
 
+    /* Country exception messages */
+    NO_COUNTRIES = "There are no countries",
+
+    /* City exception messages */
+    NO_CITY = "There are no cities",
+
     /* Likes exception messages */
     ALREADY_LIKED = 'Product already liked by this user',
     PRODUCT_NOT_LIKED = 'Product is not liked',

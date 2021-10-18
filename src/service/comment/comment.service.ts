@@ -41,12 +41,14 @@ export class CommentService {
     }
 
     async addNotifiaction(product: Product, user: User): Promise<Notification> {
-        let notification: Notification = new Notification();
-        notification.user = user;
-        notification.product = product;
-        notification.seen = 0;
-        notification.type = 'comment';
-        return await this.notificationService.addNotification(notification);
+        if (product.user.id!==user.id) {
+            let notification: Notification = new Notification();
+            notification.user = user;
+            notification.product = product;
+            notification.seen = 0;
+            notification.type = 'comment';
+            return await this.notificationService.addNotification(notification);
+        }
     }
 
     //nakon prihvatanja neke ponude, brisemo sve komentare
@@ -60,8 +62,6 @@ export class CommentService {
         .where("product.id = :oId", {oId: offer.offeredProduct.id})
         .orWhere("product.id = :rId", {rId: offer.receivedProduct.id})
         .execute();
-
-        console.log(res);
 
         if (res) {
             return res;

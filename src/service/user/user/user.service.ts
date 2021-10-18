@@ -10,6 +10,7 @@ import { ExceptionMessageEnum } from 'src/globals/ExceptionMessageEnum.enum';
 import { userMapper } from 'src/globals/functions/userMapper';
 import { Like, Repository } from 'typeorm';
 import { userArrayMapper } from 'src/globals/functions/userArrayMapper';
+import { SearchUserParamsDto } from 'src/dto/SearchUserParamsDto';
 
 @Injectable()
 export class UserService {
@@ -27,8 +28,12 @@ export class UserService {
     }
     
     async findOne(id: string): Promise<UserDto> {
-        let userEntity = await this.userRepository.findOne(id);
-        console.log(userEntity);
+        let userEntity = await this.userRepository.findOne({
+            where: {
+                id: id
+            },
+            relations: ['city']
+        });
         if (!userEntity) {
             throw new HttpException(
                 ExceptionMessageEnum.USER_NOT_FOUND,
@@ -43,9 +48,16 @@ export class UserService {
     }
 
     async registration(user: User): Promise<UserDto> {
-        let userEntity = await this.userRepository.findOne({
-          email: user.email,
-        });
+        console.log(user);
+        
+        let userEntity = await this.userRepository.findOne(
+            {
+                where: {
+                    email: user.email
+                },
+                relations: ['city', 'city.country'],
+            }
+        );
         if (userEntity) {
           throw new HttpException(
             ExceptionMessageEnum.USER_EXIST,
@@ -59,45 +71,38 @@ export class UserService {
 
     async findByEmail(email: string): Promise<any> {
         let userEntity = await this.userRepository.findOne({
-            email: email,
+            where: {
+                email: email,
+            },
+            relations: ['city', 'city.country']
         });
         if (userEntity) {
             return userMapper(userEntity);
         }
     }
     
-    // async login(loginUserDto: LoginDto): Promise<UserDto> {
-    //     let userEntity = await this.userRepository.findOne({
-    //         email: loginUserDto.email,
-    //     });
-    //     if (!userEntity) {
-    //         throw new HttpException(
-    //         ExceptionMessageEnum.USER_WRONG_CREDENTIALS,
-    //         HttpStatus.BAD_REQUEST,
-    //         );
-    //     }
-    //     if (this.decrypte(userEntity.password) === loginUserDto.password) {
-    //         return userMapper(userEntity);
-    //     } else {
-    //         throw new HttpException(
-    //         ExceptionMessageEnum.WRONG_PASSWORD_ERROR,
-    //         HttpStatus.BAD_REQUEST,
-    //         );
-    //     }
-    // }
 
     async changePhoto(userId: string, photo): Promise<UserDto> {
-        let userEntity =  await this.userRepository.findOne(userId);
+        console.log("Stigao ovde 1");
+        let userEntity =  await this.userRepository.findOne({
+            where: {
+                id: userId
+            },
+            relations: ['city']
+        });
         if (!userEntity) {
+            console.log("Stigao ovde 2");
             throw new HttpException(
             ExceptionMessageEnum.USER_NOT_FOUND,
             HttpStatus.BAD_REQUEST,
             );
         }
         if (photo) {
+            console.log("Stigao ovde 3");
             userEntity.photo = photo.buffer;
         }
         userEntity = await this.userRepository.save(userEntity);
+        console.log("Stigao ovde 4");
         return userMapper(userEntity);
     }
 
@@ -142,6 +147,56 @@ export class UserService {
             users: userArray,
             total: total
         };
+    }
+
+    async pagination1(searchUser: SearchUserParamsDto): Promise<UserPagination> { 
+
+        console.log(searchUser);
+        const skip = searchUser.pageSize * (searchUser.currentPage-1);
+
+        let whereCondition;
+
+        if (searchUser.countryName==='All') {
+            whereCondition = [
+                {firstName: Like('%' + searchUser.name + "%")},
+                {lastName: Like('%' + searchUser.name + "%")},
+            ]
+        }else {
+            console.log("Ovde smo");
+            whereCondition = [
+                {
+                    firstName: Like('%' + searchUser.name + "%"),
+                    city: {
+                        country: {
+                            name: Like('%' + searchUser.countryName + "%")
+                        }
+                    }
+                },
+                {
+                    lastName: Like('%' + searchUser.name + "%"),
+                    city: {
+                        country: {
+                            name: Like('%' + searchUser.countryName + "%")
+                        }
+                    }
+                },
+            ]
+        }
+
+        const [result, total] = await this.userRepository.findAndCount({
+            where: whereCondition,
+            take: searchUser.pageSize,
+            skip: skip,
+            relations: ['city']
+        });
+
+        let userArray: UserDto[] = userArrayMapper(result);
+
+        return {
+            users: userArray,
+            total: total
+        };
+
     }
 
     encrypte(password: string): string {

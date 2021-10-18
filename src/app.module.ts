@@ -36,6 +36,14 @@ import { Offer } from './entity/offer';
 import { OfferModule } from './module/offer/offer.module';
 import { OfferService } from './service/offer/offer.service';
 import { OfferController } from './controller/offer/offer.controller';
+import { CountryModule } from './module/country/country.module';
+import { CountryController } from './controller/country/country.controller';
+import { CountryService } from './service/country/country.service';
+import { Country } from './entity/country';
+import { CityModule } from './module/city/city.module';
+import { CityService } from './service/city/city.service';
+import { CityController } from './controller/city/city.controller';
+import { City } from './entity/city';
 
 @Module({
   imports: [
@@ -45,8 +53,8 @@ import { OfferController } from './controller/offer/offer.controller';
       port: 3306,
       username: 'newuser',
       password: 'newuser',
-      database: 'paperclip',
-      entities: [User, Product, Category, Comment, Likes, Save, Notification, Chat, Message, Offer],
+      database: 'paperclip1',
+      entities: [User, Product, Category, Comment, Likes, Save, Notification, Chat, Message, Offer, Country, City],
       synchronize: true,
     }),
     ConfigModule.forRoot({ isGlobal: true }),
@@ -60,9 +68,11 @@ import { OfferController } from './controller/offer/offer.controller';
     NotificationModule,
     ChatModule,
     MessageModule,
-    OfferModule
+    OfferModule,
+    CountryModule,
+    CityModule
   ],
-  controllers: [AppController, UserController, CategoryController, ProductController, CommentController, LikesController, AuthController, SaveController, NotificationController, ChatController, MessageController, OfferController],
+  controllers: [AppController, UserController, CategoryController, ProductController, CommentController, LikesController, AuthController, SaveController, NotificationController, ChatController, MessageController, OfferController, CountryController, CityController],
   providers: [AppService],
 })
 export class AppModule {}

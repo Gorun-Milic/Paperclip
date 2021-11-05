@@ -25,6 +25,9 @@ export class Product {
   })
   photo: string;
 
+  @Column({type: "datetime", nullable: true})
+  createdAt: string;
+
   @ManyToOne(type => Category, category => category.products, {
     eager: true,
   })

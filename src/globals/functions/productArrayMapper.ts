@@ -6,9 +6,9 @@ export function productArrayMapper(products: Product[]): ProductDto[] {
 
     let productDtos: ProductDto[] = [];
 
-    for (let i=0; i<products.length; i++) {
-        productDtos.push(productMapper(products[i]));
-    }
+    products.forEach(element => {
+        productDtos.push(productMapper(element));
+    })
 
     return productDtos;
 }

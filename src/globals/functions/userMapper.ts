@@ -10,6 +10,7 @@ export function userMapper(user): UserDto {
     userDto.password = user.password;
     userDto.city = user.city;
     userDto.zipcode = user.zipcode;
+    userDto.role = user.role;
 
     if (user.photo) {
         let buff = user.photo;

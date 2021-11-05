@@ -54,4 +54,7 @@ export enum ExceptionMessageEnum {
     CAN_NOT_UPDATE = "Can't update offer entity",
     CAN_NOT_DELETE = "Unable to delete entity",
     OFFERS_NOT_DELETED = "Unable to delete offers",
+
+    /* Statistics exception messages */
+    UNABLE_TO_GET_STATISTICS = "Unable to get statistic data"
 }

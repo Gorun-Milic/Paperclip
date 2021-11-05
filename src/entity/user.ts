@@ -7,6 +7,7 @@ import { Message } from "./message";
 import { Notification } from "./notification";
 import { Offer } from "./offer";
 import { Product } from "./product";
+import { Role } from "./role.enum";
 import { Save } from "./save";
 
 @Entity()
@@ -28,6 +29,9 @@ export class User {
 
   @Column()
   zipcode: string;
+
+  @Column({ type: 'enum', enum: Role, default: Role.USER})
+  role: Role
 
   @Column({
     type: 'longblob',

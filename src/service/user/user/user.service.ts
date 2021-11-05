@@ -8,7 +8,7 @@ import { UserPagination } from 'src/dto/UserPagination';
 import { User } from 'src/entity/user';
 import { ExceptionMessageEnum } from 'src/globals/ExceptionMessageEnum.enum';
 import { userMapper } from 'src/globals/functions/userMapper';
-import { Like, Repository } from 'typeorm';
+import { Like, Not, Repository } from 'typeorm';
 import { userArrayMapper } from 'src/globals/functions/userArrayMapper';
 import { SearchUserParamsDto } from 'src/dto/SearchUserParamsDto';
 
@@ -158,8 +158,14 @@ export class UserService {
 
         if (searchUser.countryName==='All') {
             whereCondition = [
-                {firstName: Like('%' + searchUser.name + "%")},
-                {lastName: Like('%' + searchUser.name + "%")},
+            {
+                firstName: Like('%' + searchUser.name + "%"),
+                role: Not("admin")
+            },
+            {
+                lastName: Like('%' + searchUser.name + "%"),
+                role: Not("admin")
+            },
             ]
         }else {
             console.log("Ovde smo");
@@ -170,7 +176,8 @@ export class UserService {
                         country: {
                             name: Like('%' + searchUser.countryName + "%")
                         }
-                    }
+                    },
+                    role: Not("admin")
                 },
                 {
                     lastName: Like('%' + searchUser.name + "%"),
@@ -178,7 +185,8 @@ export class UserService {
                         country: {
                             name: Like('%' + searchUser.countryName + "%")
                         }
-                    }
+                    },
+                    role: Not("admin")
                 },
             ]
         }

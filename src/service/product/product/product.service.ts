@@ -13,6 +13,7 @@ import { Like, Repository } from 'typeorm';
 import { Offer } from 'src/entity/offer';
 import { SearchProductParams } from 'src/dto/SearchProductParamsDto';
 import { first } from 'rxjs';
+import { ProductStatisticsDto } from 'src/dto/ProductStatisticsDto';
 
 @Injectable()
 export class ProductService {
@@ -28,6 +29,15 @@ export class ProductService {
         productEntity.description = productDto.description;
         productEntity.user = productDto.user;
         productEntity.category = productDto.category;
+        /*
+            new Date() - trenutni datum i vreme
+            toISOString() - prevodi date u string u formatu YYYY-MM-DDTHH:mm:ss. sssZ
+            slice(0, 19) - uzima samo prvih 19 karaktera YYYY-MM-DDTHH:mm:ss
+            replace('T', '') - zamenjuje T sa praznim stringom YYYY-MM-DDHH:mm:ss
+
+            Ovo sve radimo jer Javascript date format nije kompatibilan sa mysql date formatom
+        */
+        productEntity.createdAt = new Date().toISOString().slice(0, 19).replace('T', ' ');
         if (photo) {
             productEntity.photo = photo.buffer;
         }
@@ -61,6 +71,7 @@ export class ProductService {
     }
     
     async findOne(id: string): Promise<ProductDto> {
+        console.log("ZASTO ZOVE OVAJ?");
         const product: Product = await this.productRepository.findOne(id);
         if (!product) {
             throw new HttpException(
@@ -273,6 +284,23 @@ export class ProductService {
         }else {
             throw new HttpException(
                 ExceptionMessageEnum.PRODUCTS_NOT_EXCHANGED,
+                HttpStatus.BAD_REQUEST,
+            )
+        }
+    }
+
+    async getStatistics(): Promise<ProductStatisticsDto[]> {
+        let res = await this.productRepository.query(
+            `select MONTH(createdAt) as month, count(id) as number 
+            from product 
+            group by MONTH(createdAt) 
+            order by MONTH(createdAt)`);
+        
+        if (res) {
+            return res;
+        }else {
+            throw new HttpException(
+                ExceptionMessageEnum.UNABLE_TO_GET_STATISTICS,
                 HttpStatus.BAD_REQUEST,
             )
         }

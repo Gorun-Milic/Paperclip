@@ -19,6 +19,14 @@ export class MessageService {
     ){}
 
 
+    /*
+        new Date() - trenutni datum i vreme
+        toISOString() - prevodi date u string u formatu YYYY-MM-DDTHH:mm:ss. sssZ
+        slice(0, 19) - uzima samo prvih 19 karaktera YYYY-MM-DDTHH:mm:ss
+        replace('T', '') - zamenjuje T sa praznim stringom YYYY-MM-DDHH:mm:ss
+
+        Ovo sve radimo jer Javascript date format nije kompatibilan sa mysql date formatom
+    */
     async addMesage(message: Message): Promise<Message> {
         message.time = new Date().toISOString().slice(0, 19).replace('T', ' ');   
         return this.messageRepository.save(message);

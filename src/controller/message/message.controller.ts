@@ -1,9 +1,13 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Post, UseGuards } from '@nestjs/common';
+import { Roles } from 'src/decorators/roles.decorator';
 import { CountMessageDto } from 'src/dto/CountMessageDto';
 import { MessageDto } from 'src/dto/MessageDto';
 import { Chat } from 'src/entity/chat';
 import { Message } from 'src/entity/message';
+import { Role } from 'src/entity/role.enum';
 import { User } from 'src/entity/user';
+import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
+import { RolesGuard } from 'src/guards/roles.guard';
 import { MessageService } from 'src/service/message/message.service';
 
 @Controller('message')
@@ -18,6 +22,8 @@ export class MessageController {
         return this.messageService.addMesage(message);
     }
 
+    @Roles(Role.USER)
+    @UseGuards(JwtAuthGuard, RolesGuard)
     @Post('findMessages')
     async findMessages(@Body() chat: Chat): Promise<MessageDto[]> {
         return this.messageService.findMessages(chat);
